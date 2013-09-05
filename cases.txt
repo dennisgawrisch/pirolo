@@ -1,0 +1,209 @@
+Name: Element
+Input:
+    div
+Output:
+    <div></div>
+
+
+Name: Nested elements
+Input:
+    html
+        head
+        body
+            header
+            footer
+Output:
+    <html>
+        <head></head>
+        <body>
+            <header></header>
+            <footer></footer>
+        </body>
+    </html>
+
+
+Name: Shorthand syntax for nesting
+Input:
+    div > ul
+        li
+        li
+Output:
+    <div>
+        <ul>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+
+Name: Element with text
+Input:
+    div | Some text
+Output:
+    <div>Some text</div>
+
+
+Name: Text nodes
+Input:
+    p
+        | Text
+        | and another text
+Output:
+    <p>
+        Text
+        and another text
+    </p>
+
+
+Name: Mixed content
+Input:
+    p
+        | Text
+        em | emphasis
+        | and another text
+Output:
+    <p>
+        Text
+        <em>emphasis</em>
+        and another text
+    </p>
+
+
+Name: Multi-line (block) text
+Input:
+    |
+        Text
+        and another text
+Output:
+    Text
+    and another text
+
+
+Name: Attributes
+Input:
+    a href="http://website.example/" target="_blank"
+Output:
+    <a href="http://website.example/" target="_blank"></a>
+
+
+Name: Elements without end tag (void elements)
+Input:
+    img src="1.jpg" alt="Some text"
+    br
+Output:
+    <img src="1.jpg" alt="Some text"/>
+    <br/>
+
+
+Name: Boolean (empty) attributes
+Input:
+    option selected
+Output:
+    <option selected="selected"></option>
+
+
+Name: ID attribute
+Input:
+    div#foo
+Output:
+    <div id="foo"></div>
+
+
+Name: Class attribute
+Input:
+    div.foo
+Output:
+    <div class="foo"></div>
+
+
+Name: Several classes
+Input:
+    div.foo.bar
+Output:
+    <div class="foo bar"></div>
+
+
+Name: ID and class
+Input:
+    div#foo.bar.baz
+Output:
+    <div id="foo" class="bar baz"></div>
+
+
+Name: Overriding ID attribute
+Input:
+    div#foo id="bar"
+Output:
+    <div id="bar"></div>
+
+
+Name: Overriding class attribute
+Input:
+    div.foo class="bar"
+Output:
+    <div class="foo bar"></div>
+
+
+Name: Long attributes
+Input:
+    input type="text"
+        & name="title"
+        & maxlength="10"
+        & value="Some text"
+Output:
+    <input type="text" name="title" maxlength="10" value="Some text"/>
+
+
+Name: Comment
+Input:
+    ! Text of comment
+Output:
+    <!-- Text of comment -->
+
+
+Name: Hidden comment
+Input:
+    div
+    !! Some internal comment
+    p
+Output:
+    <div></div>
+    <p></p>
+
+
+Name: Special DOCTYPE comment
+Input:
+    !DOCTYPE HTML
+Output:
+    <!DOCTYPE HTML>
+
+
+Name: Special XML comment
+Input:
+    !xml version="1.0" charset="UTF-8"
+Output:
+    <?xml version="1.0" charset="UTF-8"?>
+
+
+Name: Multi-line (block) comment
+Input:
+    !
+        Comment
+        and another line
+Output:
+    <!--
+        Comment
+        and another line
+    -->
+
+
+Name: Multi-line (block) hidden comment
+Input:
+    div
+    !!
+        Comment
+        and another line
+    p
+Output:
+    <div></div>
+    <p></p>
