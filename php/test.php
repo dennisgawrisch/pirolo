@@ -5,6 +5,8 @@ set_error_handler(function($level, $message, $filename, $line) {
     throw new ErrorException($message, 0, $level, $filename, $line);
 });
 
+require_once __DIR__ . "/Pirolo/Markup.php";
+
 $cases = array();
 
 $file = fopen(__DIR__ . "/../cases.txt", "rb");
@@ -42,39 +44,42 @@ $failCount = 0;
 $errorCount = 0;
 foreach ($cases as &$case) {
     try {
-        $output = "TODO";
+        $markup = new Pirolo\Markup;
+        $output = $markup->process($case["input"]);
         if ($case["output"] == $output) {
             ++$passCount;
             echo ".";
         } else {
             ++$failCount;
             echo "F";
-            $case["fail"] = $output;
+            $case["fail"] = TRUE;
+            $case["producedOutput"] = $output;
         }
     } catch (Exception $exception) {
         ++$errorCount;
         echo "E";
-        $case["error"] = $exception;
+        $case["error"] = TRUE;
+        $case["exception"] = $exception;
     }
 }
 echo PHP_EOL;
 echo "Pass: $passCount, fail: $failCount, error: $errorCount" . PHP_EOL;
 
 foreach ($cases as $case) {
-    if (isset($case["fail"])) {
+    if (!empty($case["fail"])) {
         echo PHP_EOL;
         echo "Failed: " . $case["name"] . PHP_EOL;
         echo "Input:" . PHP_EOL . $case["input"];
         echo "Expected output:" . PHP_EOL . $case["output"];
-        echo "Produced output:" . PHP_EOL . $case["fail"] . PHP_EOL;
+        echo "Produced output:" . PHP_EOL . $case["producedOutput"] . PHP_EOL;
     }
 }
 
 foreach ($cases as $case) {
-    if (isset($case["error"])) {
+    if (!empty($case["error"])) {
         echo PHP_EOL;
         echo "Error: " . $case["name"] . PHP_EOL;
-        $exception = $case["error"];
+        $exception = $case["exception"];
         echo get_class($exception) . PHP_EOL;
         if ($exception->getCode()) {
             echo "Code: " . $exception->getCode() . PHP_EOL;
