@@ -66,11 +66,21 @@ class Markup {
                     } else {
                         $newNode = new CommentNode(ltrim($line));
                     }
-                } elseif (preg_match("/^(\\S+)(.*)( \\| (.+))/", $line, $matches)) {
-                    $newNode = new ElementNode($matches[1]);
-                    $newNode->text = $matches[4];
-                } else {
-                    $newNode = new ElementNode($line);
+                } elseif (preg_match("/^([^ #\\.]*)(([#\\.][^ #\\.]+)*)((\\s+[^\\|]+(=.+)?)*)( \\| (.+))?$/", $line, $matches)) {
+                    $elementName = !empty($matches[1]) ? $matches[1] : "div";
+                    $newNode = new ElementNode($elementName);
+                    if (in_array($elementName, $this->voidElements)) {
+                        $newNode->void = TRUE;
+                    }
+                    if (!empty($matches[2])) {
+                        #TODO $matches[2] — #foo.bar.baz
+                    }
+                    if (!empty($matches[4])) {
+                        $newNode->attributes = $matches[4];
+                    }
+                    if (!empty($matches[8])) {
+                        $newNode->text = $matches[8];
+                    }
                 }
             } else {
                 $newNode = new TextNode($line);

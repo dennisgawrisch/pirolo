@@ -3,7 +3,9 @@ namespace Pirolo;
 
 class ElementNode extends NodeWithBeginEnd {
     public $name;
+    public $attributes;
     public $text;
+    public $void = FALSE;
 
     public function __construct($name) {
         $this->name = $name;
@@ -12,14 +14,25 @@ class ElementNode extends NodeWithBeginEnd {
     public function outputBegin() {
         $output = "<";
         $output .= $this->name;
-        $output .= ">";
-        if (!empty($this->text)) {
-            $output .= $this->text;
+        if (!empty($this->attributes)) {
+            $output .= $this->attributes;
+        }
+        if ($this->isReallyVoid()) {
+            $output .= "/>";
+        } else {
+            $output .= ">";
+            if (!empty($this->text)) {
+                $output .= $this->text;
+            }
         }
         return $output;
     }
 
     public function outputEnd() {
-        return "</" . $this->name . ">";
+        return $this->isReallyVoid() ? "" : "</" . $this->name . ">";
+    }
+
+    public function isReallyVoid() {
+        return $this->void && empty($this->text) && (0 == count($this->children));
     }
 }

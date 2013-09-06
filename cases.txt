@@ -106,44 +106,55 @@ Output:
 
 Name: ID attribute
 Input:
-    div#foo
+    span#foo
 Output:
-    <div id="foo"></div>
+    <span id="foo"></span>
 
 
 Name: Class attribute
 Input:
-    div.foo
+    span.foo
 Output:
-    <div class="foo"></div>
+    <span class="foo"></span>
 
 
 Name: Several classes
 Input:
-    div.foo.bar
+    span.foo.bar
 Output:
-    <div class="foo bar"></div>
+    <span class="foo bar"></span>
 
 
 Name: ID and class
 Input:
-    div#foo.bar.baz
+    span#foo.bar.baz
 Output:
-    <div id="foo" class="bar baz"></div>
+    <span id="foo" class="bar baz"></span>
 
 
 Name: Overriding ID attribute
 Input:
-    div#foo id="bar"
+    span#foo id="bar"
 Output:
-    <div id="bar"></div>
+    <span id="bar"></span>
 
 
 Name: Overriding class attribute
 Input:
-    div.foo class="bar"
+    span.foo class="bar"
 Output:
-    <div class="foo bar"></div>
+    <span class="foo bar"></span>
+
+
+Name: Default element is div
+Input:
+    #foo
+    .bar
+    #foo.bar.baz
+Output:
+    <div id="foo"></div>
+    <div class="bar"></div>
+    <div id="foo" class="bar baz"></div>
 
 
 Name: Long attributes
