@@ -5,7 +5,11 @@ set_error_handler(function($level, $message, $filename, $line) {
     throw new ErrorException($message, 0, $level, $filename, $line);
 });
 
-require_once __DIR__ . "/Pirolo/Markup.php";
+spl_autoload_register(function($class) {
+    if ("Pirolo\\" == substr($class, 0, 7)) {
+        require_once __DIR__ . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $class) . ".php";
+    }
+});
 
 $cases = array();
 
@@ -42,7 +46,7 @@ if (isset($currentCase)) {
 $passCount = 0;
 $failCount = 0;
 $errorCount = 0;
-foreach ($cases as &$case) {
+foreach ($cases as $i => $case) {
     try {
         $markup = new Pirolo\Markup;
         $output = $markup->process($case["input"]);
@@ -52,14 +56,14 @@ foreach ($cases as &$case) {
         } else {
             ++$failCount;
             echo "F";
-            $case["fail"] = TRUE;
-            $case["producedOutput"] = $output;
+            $cases[$i]["fail"] = TRUE;
+            $cases[$i]["producedOutput"] = $output;
         }
     } catch (Exception $exception) {
         ++$errorCount;
         echo "E";
-        $case["error"] = TRUE;
-        $case["exception"] = $exception;
+        $cases[$i]["error"] = TRUE;
+        $cases[$i]["exception"] = $exception;
     }
 }
 echo PHP_EOL;

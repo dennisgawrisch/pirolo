@@ -73,9 +73,11 @@ Name: Multi-line (block) text
 Input:
     |
         Text
+            indented text
         and another text
 Output:
     Text
+        indented text
     and another text
 
 
@@ -99,7 +101,7 @@ Name: Boolean (empty) attributes
 Input:
     option selected
 Output:
-    <option selected="selected"></option>
+    <option selected></option>
 
 
 Name: ID attribute
@@ -207,3 +209,26 @@ Input:
 Output:
     <div></div>
     <p></p>
+
+
+Name: Mixed inline and multi-line text
+Input:
+    | Text
+        First line
+        Second line
+Output:
+    Text
+        First line
+        Second line
+
+
+Name: Mixed inline and multi-line comment
+Input:
+    ! Comment
+        First line
+        Second line
+Output:
+    <!-- Comment
+        First line
+        Second line
+    -->
