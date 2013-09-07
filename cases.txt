@@ -250,3 +250,15 @@ Output:
         First line
         Second line
     -->
+
+
+Name: Mixed inline and multi-line hidden comment
+Input:
+    div
+    !! Comment
+        First line
+        Second line
+    p
+Output:
+    <div></div>
+    <p></p>
