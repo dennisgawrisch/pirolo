@@ -24,16 +24,23 @@ Output:
 
 Name: Shorthand syntax for nesting
 Input:
-    div > ul
-        li
-        li
+    header
+        div > ul
+            li
+            li
+        p
+    footer
 Output:
-    <div>
-        <ul>
-            <li></li>
-            <li></li>
-        </ul>
-    </div>
+    <header>
+        <div>
+            <ul>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <p></p>
+    </header>
+    <footer></footer>
 
 
 Name: Element with text

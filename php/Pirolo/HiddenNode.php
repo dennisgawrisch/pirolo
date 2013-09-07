@@ -1,7 +1,7 @@
 <?php
 namespace Pirolo;
 
-class HiddenCommentNode extends Node {
+class HiddenNode extends Node {
     public $parseContents = FALSE;
 
     public function output() {
