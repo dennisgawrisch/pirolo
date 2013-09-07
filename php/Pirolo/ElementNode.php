@@ -17,7 +17,7 @@ class ElementNode extends NodeWithBeginEnd {
         if (!empty($this->attributes)) {
             $output .= $this->attributes;
         }
-        if ($this->isReallyVoid()) {
+        if ($this->isVoid()) {
             $output .= "/>";
         } else {
             $output .= ">";
@@ -29,19 +29,10 @@ class ElementNode extends NodeWithBeginEnd {
     }
 
     public function outputEnd() {
-        return $this->isReallyVoid() ? "" : "</" . $this->name . ">";
+        return $this->isVoid() ? "" : "</" . $this->name . ">";
     }
 
-    protected function isReallyVoid() {
-        return $this->void && empty($this->text) && $this->hasNoRealChildren();
-    }
-
-    protected function hasNoRealChildren() {
-        foreach ($this->children as $child) {
-            if (! $child instanceof HiddenNode) {
-                return FALSE;
-            }
-        }
-        return TRUE;
+    protected function isVoid() {
+        return $this->void && empty($this->text) && !$this->hasRealChildren();
     }
 }

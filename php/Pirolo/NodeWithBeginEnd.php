@@ -6,14 +6,14 @@ abstract class NodeWithBeginEnd extends Node {
     abstract public function outputEnd();
 
     public function output() {
-        $output = str_repeat(" ", $this->leadingSpaces);
+        $output = $this->outputIndent();
         $output .= $this->outputBegin();
-        if (count($this->children) > 0) {
+        if ($this->hasRealChildren()) {
             $output .= PHP_EOL;
             foreach ($this->children as $child) {
                 $output .= $child->output();
             }
-            $output .= str_repeat(" ", $this->leadingSpaces);
+            $output .= $this->outputIndent();
         }
         $output .= $this->outputEnd();
         $output .= PHP_EOL;

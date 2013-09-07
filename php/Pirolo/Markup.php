@@ -34,7 +34,7 @@ class Markup {
         $source = str_replace("\t", str_repeat(" ", $this->tabReplacementSpaces), $source);
 
         $document = new DocumentNode;
-        $node = $document;
+        $parent = $document;
 
         foreach (explode(PHP_EOL, $source) as $line) {
             // trailing whitespace has no meaning
@@ -49,47 +49,67 @@ class Markup {
             for ($leadingSpaces = 0; " " == $line[$leadingSpaces]; $leadingSpaces++);
             $line = substr($line, $leadingSpaces);
 
-            while ($leadingSpaces <= $node->leadingSpaces) {
-                $node = $node->parent;
+            while ($leadingSpaces <= $parent->leadingSpaces) {
+                $parent = $parent->parent;
             }
-            if ($node->parseContents) {
-                if ("|" == $line[0]) {
-                    $newNode = new TextNode(ltrim(substr($line, 1)));
-                } elseif ("!" == $line[0]) {
-                    $line = substr($line, 1);
-                    if ("!" == $line[0]) {
-                        $newNode = new HiddenNode;
-                    } elseif (preg_match("/^doctype/i", $line)) {
-                        $newNode = new DoctypeNode($line);
-                    } elseif (preg_match("/^xml\\s/i", $line)) {
-                        $newNode = new XmlDeclarationNode($line);
-                    } else {
-                        $newNode = new CommentNode(ltrim($line));
-                    }
-                } elseif (preg_match("/^([^ #\\.]*)(([#\\.][^ #\\.]+)*)((\\s+[^\\|]+(=.+)?)*)( \\| (.+))?$/", $line, $matches)) {
-                    $elementName = !empty($matches[1]) ? $matches[1] : "div";
-                    $newNode = new ElementNode($elementName);
-                    if (in_array($elementName, $this->voidElements)) {
-                        $newNode->void = TRUE;
-                    }
-                    if (!empty($matches[2])) {
-                        #TODO $matches[2] — #foo.bar.baz
-                    }
-                    if (!empty($matches[4])) {
-                        $newNode->attributes = $matches[4];
-                    }
-                    if (!empty($matches[8])) {
-                        $newNode->text = $matches[8];
-                    }
+
+            if (!$parent->parseContents) {
+                $node = new TextNode($line);
+            } elseif ("|" == $line[0]) {
+                $node = new TextNode(ltrim(substr($line, 1)));
+            } elseif ("!!" == substr($line, 0, 2)) {
+                $node = new HiddenNode;
+            } elseif (preg_match("/^!doctype\\s/i", $line)) {
+                $node = new DoctypeNode(substr($line, 1));
+            } elseif (preg_match("/^!xml\\s/i", $line)) {
+                $node = new XmlDeclarationNode(substr($line, 1));
+            } elseif ("!" == $line[0]) {
+                $node = new CommentNode(ltrim(substr($line, 1)));
+            } elseif ("&" == $line[0]) {
+                $node = new HiddenNode;
+                $parent->attributes .= " " . ltrim(substr($line, 1));
+            } else { // this is an element node
+                $textDelimiterPos = strpos($line, " | ");
+                if (FALSE === $textDelimiterPos) {
+                    $text = NULL;
                 } else {
-                    $newNode = new HiddenNode;
+                    $text = substr($line, $textDelimiterPos + 3);
+                    $line = substr($line, 0, $textDelimiterPos);
                 }
-            } else {
-                $newNode = new TextNode($line);
+
+                $elementDeclarations = explode(" > ", $line);
+                foreach ($elementDeclarations as $i => $line) {
+                    $firstSpacePos = strpos($line, " ");
+                    if (FALSE === $firstSpacePos) {
+                        $attributesString = NULL;
+                    } else {
+                        $attributesString = substr($line, $firstSpacePos);
+                        $line = substr($line, 0, $firstSpacePos);
+                    }
+
+                    preg_match("/([^#\\.]*)((?:[#\\.][^#\\.]+)*)/", $line, $matches);
+                    $elementName = empty($matches[1]) ? "div" : $matches[1];
+
+                    $node = new ElementNode($elementName);
+                    if (in_array(strtolower($elementName), $this->voidElements)) {
+                        $node->void = TRUE;
+                    }
+                    $node->attributes = $attributesString;
+
+                    if ($i < count($elementDeclarations) - 1) {
+                        $node->leadingSpaces = $leadingSpaces;
+                        $node->setParent($parent);
+                        $parent = $node;
+                    }
+                }
+
+                // set text for last node
+                $node->text = $text;
             }
-            $newNode->leadingSpaces = $leadingSpaces;
-            $newNode->setParent($node);
-            $node = $newNode;
+
+            $node->leadingSpaces = $leadingSpaces;
+            $node->setParent($parent);
+            $parent = $node;
         }
 
         return $document->output();

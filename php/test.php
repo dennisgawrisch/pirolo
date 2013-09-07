@@ -50,6 +50,16 @@ foreach ($cases as $i => $case) {
     try {
         $markup = new Pirolo\Markup;
         $output = $markup->process($case["input"]);
+
+        // additional indentation due to cases text format
+        $lines = explode(PHP_EOL, $output);
+        foreach ($lines as $j => $line) {
+            if (!empty($line)) {
+                $lines[$j] = "    " . $line;
+            }
+        }
+        $output = implode(PHP_EOL, $lines);
+
         if ($case["output"] == $output) {
             ++$passCount;
             echo ".";

@@ -25,19 +25,21 @@ Output:
 Name: Shorthand syntax for nesting
 Input:
     header
-        div > ul
+        section > div > ul
             li
             li
         p
     footer
 Output:
     <header>
-        <div>
-            <ul>
-                <li></li>
-                <li></li>
-            </ul>
-        </div>
+        <section>
+            <div>
+                <ul>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </section>
         <p></p>
     </header>
     <footer></footer>

@@ -12,7 +12,7 @@ class TextNode extends Node {
     public function output($unindent = FALSE) {
         $output = "";
         if (!empty($this->text)) {
-            $output .= str_repeat(" ", $unindent ? $this->parent->leadingSpaces : $this->leadingSpaces);
+            $output .= $unindent ? $this->parent->outputIndent() : $this->outputIndent();
             $output .= $this->text;
             $output .= PHP_EOL;
         }
