@@ -87,8 +87,21 @@ class Markup {
                         $line = substr($line, 0, $firstSpacePos);
                     }
 
+                    // element name followed by id & class shorthand specifications
                     preg_match("/([^#\\.]*)((?:[#\\.][^#\\.]+)*)/", $line, $matches);
                     $elementName = empty($matches[1]) ? "div" : $matches[1];
+                    if (!empty($matches[2])) {
+                        if (preg_match_all("/\\.([^#\\.]+)/", $matches[2], $classMatches)) {
+                            $classValue = implode(" ", $classMatches[1]);
+                            $classAttributeString = 'class="' . htmlspecialchars($classValue, ENT_QUOTES, "UTF-8") .'"';
+                            $attributesString = " " . $classAttributeString . $attributesString;
+                        }
+                        if (preg_match_all("/#([^#\\.]+)/", $matches[2], $idMatches)) {
+                            $idValue = $idMatches[1][count($idMatches[1]) - 1];
+                            $idAttributeString = 'id="' . htmlspecialchars($idValue, ENT_QUOTES, "UTF-8") .'"';
+                            $attributesString = " " . $idAttributeString . $attributesString;
+                        }
+                    }
 
                     $node = new ElementNode($elementName);
                     if (in_array(strtolower($elementName), $this->voidElements)) {
