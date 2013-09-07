@@ -58,7 +58,7 @@ class Markup {
                 } elseif ("!" == $line[0]) {
                     $line = substr($line, 1);
                     if ("!" == $line[0]) {
-                        $newNode = new HiddenNode(ltrim(substr($line, 1)));
+                        $newNode = new HiddenNode;
                     } elseif (preg_match("/^doctype/i", $line)) {
                         $newNode = new DoctypeNode($line);
                     } elseif (preg_match("/^xml\\s/i", $line)) {
@@ -81,6 +81,8 @@ class Markup {
                     if (!empty($matches[8])) {
                         $newNode->text = $matches[8];
                     }
+                } else {
+                    $newNode = new HiddenNode;
                 }
             } else {
                 $newNode = new TextNode($line);
