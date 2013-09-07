@@ -32,7 +32,16 @@ class ElementNode extends NodeWithBeginEnd {
         return $this->isReallyVoid() ? "" : "</" . $this->name . ">";
     }
 
-    public function isReallyVoid() {
-        return $this->void && empty($this->text) && (0 == count($this->children));
+    protected function isReallyVoid() {
+        return $this->void && empty($this->text) && $this->hasNoRealChildren();
+    }
+
+    protected function hasNoRealChildren() {
+        foreach ($this->children as $child) {
+            if (! $child instanceof HiddenNode) {
+                return FALSE;
+            }
+        }
+        return TRUE;
     }
 }
