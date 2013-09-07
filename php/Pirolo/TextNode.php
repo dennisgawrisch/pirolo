@@ -9,15 +9,15 @@ class TextNode extends Node {
         $this->text = $text;
     }
 
-    public function output() {
+    public function output($unindent = FALSE) {
         $output = "";
         if (!empty($this->text)) {
-            $output .= str_repeat(" ", $this->leadingSpaces);
+            $output .= str_repeat(" ", $unindent ? $this->parent->leadingSpaces : $this->leadingSpaces);
             $output .= $this->text;
             $output .= PHP_EOL;
         }
         foreach ($this->children as $child) {
-            $output .= $child->output();
+            $output .= $child->output($unindent || empty($this->text));
         }
         return $output;
     }
