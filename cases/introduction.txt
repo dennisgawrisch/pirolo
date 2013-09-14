@@ -1,0 +1,152 @@
+Name: No closing tags, no brackets
+Input:
+    ul class="users pictures" id="my-users-list"
+        li
+            img src="1.png" alt="First book"
+        li
+            a href="/books/2"
+                img src="2.png" alt="Second book"
+Output:
+    <ul class="users pictures" id="my-users-list">
+        <li>
+            <img src="1.png" alt="First book"/>
+        </li>
+        <li>
+            <a href="/books/2">
+                <img src="2.png" alt="Second book"/>
+            </a>
+        </li>
+    </ul>
+
+Name: Shorthand syntax for nesting
+Input:
+    ul class="users pictures" id="my-users-list"
+        li > img src="1.png" alt="First book"
+        li > a href="/books/2" > img src="2.png" alt="Second book"
+Output:
+    <ul class="users pictures" id="my-users-list">
+        <li>
+            <img src="1.png" alt="First book"/>
+        </li>
+        <li>
+            <a href="/books/2">
+                <img src="2.png" alt="Second book"/>
+            </a>
+        </li>
+    </ul>
+
+Name: Shortcuts for id and class attributes
+Input:
+    ul#my-users-list.users.pictures
+        li > img src="1.png" alt="First book"
+        li > a href="/books/2" > img src="2.png" alt="Second book"
+Output:
+    <ul id="my-users-list" class="users pictures">
+        <li>
+            <img src="1.png" alt="First book"/>
+        </li>
+        <li>
+            <a href="/books/2">
+                <img src="2.png" alt="Second book"/>
+            </a>
+        </li>
+    </ul>
+
+
+Name: Element with text
+Input:
+    li | Some text
+Output:
+    <li>Some text</li>
+
+
+Name: Standalone text node
+Input:
+    | Some text
+Output:
+    Some text
+
+
+Name: Multi-line (block) text - content not parsed
+Input:
+    p
+        |
+            Text
+                indented text
+            and another text
+Output:
+    <p>
+        Text
+            indented text
+        and another text
+    </p>
+
+
+Name: Default element is div
+Input:
+    #foo
+    .bar
+    #foo.bar.baz
+Output:
+    <div id="foo"></div>
+    <div class="bar"></div>
+    <div id="foo" class="bar baz"></div>
+
+
+Name: Multi-line (long) syntax for attributes
+Input:
+    button type="submit"
+        & name="save"
+        & value="1"
+        | Save
+Output:
+    <button type="submit" name="save" value="1">
+        Save
+    </button>
+
+
+Name: Comment
+Input:
+    ! Text of comment
+Output:
+    <!-- Text of comment -->
+
+
+Name: Hidden comment - no output
+Input:
+    !! Some internal comment
+Output:
+
+
+Name: Multi-line (block) comment - content not parsed
+Input:
+    !
+        Comment
+        and another line
+Output:
+    <!--
+        Comment
+        and another line
+    -->
+
+
+Name: Multi-line (block) hidden comment - content not parsed, no output
+Input:
+    !!
+        Comment
+        and another line
+Output:
+
+
+Name: Special DOCTYPE comment
+Input:
+    !DOCTYPE HTML
+Output:
+    <!DOCTYPE HTML>
+
+
+Name: Special XML comment
+Input:
+    !xml version="1.0" encoding="UTF-8"
+Output:
+    <?xml version="1.0" encoding="UTF-8"?>

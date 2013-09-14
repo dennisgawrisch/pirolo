@@ -8,5 +8,6 @@ set_error_handler(function($level, $message, $filename, $line) {
 require_once __DIR__ . "/Pirolo/autoload.php";
 
 $tests = new Pirolo\TestSuite;
-$tests->add(__DIR__ . "/../cases.txt");
+$tests->add(__DIR__ . "/../cases/introduction.txt");
+$tests->add(__DIR__ . "/../cases/details.txt");
 $tests->run();
