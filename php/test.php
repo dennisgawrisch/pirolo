@@ -5,11 +5,7 @@ set_error_handler(function($level, $message, $filename, $line) {
     throw new ErrorException($message, 0, $level, $filename, $line);
 });
 
-spl_autoload_register(function($class) {
-    if ("Pirolo\\" == substr($class, 0, 7)) {
-        require_once __DIR__ . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $class) . ".php";
-    }
-});
+require_once __DIR__ . "/Pirolo/autoload.php";
 
 $cases = array();
 
