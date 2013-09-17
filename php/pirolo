@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+require_once "Pirolo/autoload.php";
+
+if (empty($_SERVER["argv"][1])) {
+    die("Usage: pirolo <filename>" . PHP_EOL);
+}
+
+$source = file_get_contents($_SERVER["argv"][1]);
+$markup = new Pirolo\Markup;
+$output = $markup->process($source);
+echo $output;
