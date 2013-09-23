@@ -55,73 +55,76 @@ class Markup {
 
             if (!$parent->parseContents) {
                 $node = new TextNode($line);
-            } elseif ("|" == $line[0]) {
-                $node = new TextNode(ltrim(substr($line, 1)));
-            } elseif ("!!" == substr($line, 0, 2)) {
-                $node = new HiddenNode;
-            } elseif (preg_match("/^!doctype\\s/i", $line)) {
-                $node = new DoctypeNode(substr($line, 1));
-            } elseif (preg_match("/^!xml\\s/i", $line)) {
-                $node = new XmlDeclarationNode(substr($line, 1));
-            } elseif ("!" == $line[0]) {
-                $node = new CommentNode(ltrim(substr($line, 1)));
             } elseif ("%=" == substr($line, 0, 2)) {
                 $node = new PhpNode("echo " . ltrim(substr($line, 2)));
             } elseif ("%" == $line[0]) {
                 $node = new PhpNode(ltrim(substr($line, 1)));
-            } elseif ("&" == $line[0]) {
-                $node = new HiddenNode;
-                $parent->attributes .= " " . ltrim(substr($line, 1));
-            } else { // this is an element node
-                $textDelimiterPos = strpos($line, " | ");
-                if (FALSE === $textDelimiterPos) {
-                    $text = NULL;
-                } else {
-                    $text = substr($line, $textDelimiterPos + 3);
-                    $line = substr($line, 0, $textDelimiterPos);
-                }
-
-                $elementDeclarations = explode(" > ", $line);
-                foreach ($elementDeclarations as $i => $line) {
-                    $firstSpacePos = strpos($line, " ");
-                    if (FALSE === $firstSpacePos) {
-                        $attributesString = NULL;
+            } else {
+                $line = preg_replace("/%= (.*)( %|$)/U", "<?php echo $1; ?>", $line);
+                if ("|" == $line[0]) {
+                    $node = new TextNode(ltrim(substr($line, 1)));
+                } elseif ("!!" == substr($line, 0, 2)) {
+                    $node = new HiddenNode;
+                } elseif (preg_match("/^!doctype\\s/i", $line)) {
+                    $node = new DoctypeNode(substr($line, 1));
+                } elseif (preg_match("/^!xml\\s/i", $line)) {
+                    $node = new XmlDeclarationNode(substr($line, 1));
+                } elseif ("!" == $line[0]) {
+                    $node = new CommentNode(ltrim(substr($line, 1)));
+                } elseif ("&" == $line[0]) {
+                    $node = new HiddenNode;
+                    $parent->attributes .= " " . ltrim(substr($line, 1));
+                } else { // this is an element node
+                    $textDelimiterPos = strpos($line, " | ");
+                    if (FALSE === $textDelimiterPos) {
+                        $text = NULL;
                     } else {
-                        $attributesString = substr($line, $firstSpacePos);
-                        $line = substr($line, 0, $firstSpacePos);
+                        $text = substr($line, $textDelimiterPos + 3);
+                        $line = substr($line, 0, $textDelimiterPos);
                     }
 
-                    // element name followed by id & class shorthand specifications
-                    preg_match("/([^#\\.]*)((?:[#\\.][^#\\.]+)*)/", $line, $matches);
-                    $elementName = empty($matches[1]) ? "div" : $matches[1];
-                    if (!empty($matches[2])) {
-                        if (preg_match_all("/\\.([^#\\.]+)/", $matches[2], $classMatches)) {
-                            $classValue = implode(" ", $classMatches[1]);
-                            $classAttributeString = 'class="' . htmlspecialchars($classValue, ENT_QUOTES, "UTF-8") .'"';
-                            $attributesString = " " . $classAttributeString . $attributesString;
+                    $elementDeclarations = explode(" > ", $line);
+                    foreach ($elementDeclarations as $i => $line) {
+                        $firstSpacePos = strpos($line, " ");
+                        if (FALSE === $firstSpacePos) {
+                            $attributesString = NULL;
+                        } else {
+                            $attributesString = substr($line, $firstSpacePos);
+                            $line = substr($line, 0, $firstSpacePos);
                         }
-                        if (preg_match_all("/#([^#\\.]+)/", $matches[2], $idMatches)) {
-                            $idValue = $idMatches[1][count($idMatches[1]) - 1];
-                            $idAttributeString = 'id="' . htmlspecialchars($idValue, ENT_QUOTES, "UTF-8") .'"';
-                            $attributesString = " " . $idAttributeString . $attributesString;
+
+                        // element name followed by id & class shorthand specifications
+                        preg_match("/([^#\\.]*)((?:[#\\.][^#\\.]+)*)/", $line, $matches);
+                        $elementName = empty($matches[1]) ? "div" : $matches[1];
+                        if (!empty($matches[2])) {
+                            if (preg_match_all("/\\.([^#\\.]+)/", $matches[2], $classMatches)) {
+                                $classValue = implode(" ", $classMatches[1]);
+                                $classAttributeString = 'class="' . htmlspecialchars($classValue, ENT_QUOTES, "UTF-8") .'"';
+                                $attributesString = " " . $classAttributeString . $attributesString;
+                            }
+                            if (preg_match_all("/#([^#\\.]+)/", $matches[2], $idMatches)) {
+                                $idValue = $idMatches[1][count($idMatches[1]) - 1];
+                                $idAttributeString = 'id="' . htmlspecialchars($idValue, ENT_QUOTES, "UTF-8") .'"';
+                                $attributesString = " " . $idAttributeString . $attributesString;
+                            }
+                        }
+
+                        $node = new ElementNode($elementName);
+                        if (in_array(strtolower($elementName), $this->voidElements)) {
+                            $node->void = TRUE;
+                        }
+                        $node->attributes = $attributesString;
+
+                        if ($i < count($elementDeclarations) - 1) {
+                            $node->leadingSpaces = $leadingSpaces;
+                            $node->setParent($parent);
+                            $parent = $node;
                         }
                     }
 
-                    $node = new ElementNode($elementName);
-                    if (in_array(strtolower($elementName), $this->voidElements)) {
-                        $node->void = TRUE;
-                    }
-                    $node->attributes = $attributesString;
-
-                    if ($i < count($elementDeclarations) - 1) {
-                        $node->leadingSpaces = $leadingSpaces;
-                        $node->setParent($parent);
-                        $parent = $node;
-                    }
+                    // set text for last node
+                    $node->text = $text;
                 }
-
-                // set text for last node
-                $node->text = $text;
             }
 
             $node->leadingSpaces = $leadingSpaces;

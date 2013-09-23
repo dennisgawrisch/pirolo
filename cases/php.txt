@@ -28,3 +28,27 @@ Input:
     %= $foo
 Output:
     <?php echo $foo; ?>
+
+Name: PHP echo (element’s contents)
+Input:
+    foo | %= $bar
+Output:
+    <foo><?php echo $bar; ?></foo>
+
+Name: PHP echo (within element’s contents)
+Input:
+    p | Hello, %= $name %! How are you?
+Output:
+    <p>Hello, <?php echo $name; ?>! How are you?</p>
+
+Name: PHP echo (within element’s attributes)
+Input:
+    a href="/users/%= $userId %" | Profile
+Output:
+    <a href="/users/<?php echo $userId; ?>">Profile</a>
+
+Name: PHP echo (within comment)
+Input:
+    ! Page generation time: %= $time %
+Output:
+    <!-- Page generation time: <?php echo $time; ?> -->
