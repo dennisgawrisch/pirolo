@@ -10,4 +10,5 @@ require_once __DIR__ . "/Pirolo/autoload.php";
 $tests = new Pirolo\TestSuite;
 $tests->add(__DIR__ . "/../cases/introduction.txt");
 $tests->add(__DIR__ . "/../cases/details.txt");
+$tests->add(__DIR__ . "/../cases/php.txt");
 $tests->run();

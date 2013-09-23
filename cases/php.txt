@@ -1,0 +1,24 @@
+Name: PHP instruction
+Input:
+    % $foo = 5
+Output:
+    <?php $foo = 5; ?>
+
+Name: Multi-line PHP block
+Input:
+    %
+        $foo = 5;
+        $bar = $foo - 2;
+        if ($bar > 0) {
+            echo "Greater!";
+        }
+        unset($bar);
+Output:
+    <?php
+        $foo = 5;
+        $bar = $foo - 2;
+        if ($bar > 0) {
+            echo "Greater!";
+        }
+        unset($bar);
+    ?>
