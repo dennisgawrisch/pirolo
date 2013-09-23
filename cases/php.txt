@@ -22,3 +22,9 @@ Output:
         }
         unset($bar);
     ?>
+
+Name: PHP echo (whole line)
+Input:
+    %= $foo
+Output:
+    <?php echo $foo; ?>

@@ -65,6 +65,8 @@ class Markup {
                 $node = new XmlDeclarationNode(substr($line, 1));
             } elseif ("!" == $line[0]) {
                 $node = new CommentNode(ltrim(substr($line, 1)));
+            } elseif ("%=" == substr($line, 0, 2)) {
+                $node = new PhpNode("echo " . ltrim(substr($line, 2)));
             } elseif ("%" == $line[0]) {
                 $node = new PhpNode(ltrim(substr($line, 1)));
             } elseif ("&" == $line[0]) {
