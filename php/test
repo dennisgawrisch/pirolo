@@ -11,4 +11,5 @@ $tests = new Pirolo\TestSuite;
 $tests->add(__DIR__ . "/../cases/introduction.txt");
 $tests->add(__DIR__ . "/../cases/details.txt");
 $tests->add(__DIR__ . "/../cases/php.txt");
+$tests->add(__DIR__ . "/../cases/php-details.txt");
 $tests->run();

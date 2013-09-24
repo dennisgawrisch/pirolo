@@ -1,0 +1,29 @@
+Name: PHP echo (whole line) with sprintf
+Input:
+    %= sprintf("User: %s, count: %d", $user, $count)
+Output:
+    <?php echo sprintf("User: %s, count: %d", $user, $count); ?>
+
+Name: PHP echo (element’s contents) with sprintf
+Input:
+    p | %= sprintf("User: %s, count: %d", $user, $count)
+Output:
+    <p><?php echo sprintf("User: %s, count: %d", $user, $count); ?></p>
+
+Name: PHP echo (inline) with sprintf
+Input:
+    p | Details (%= sprintf("user: %s, count: %d", $user, $count) %) are hidden from public.
+Output:
+    <p>Details (<?php echo sprintf("user: %s, count: %d", $user, $count); ?>) are hidden from public.</p>
+
+Name: PHP echo leading element’s contents
+Input:
+    p | %= $name %! How are you?
+Output:
+    <p><?php echo $name; ?>! How are you?</p>
+
+Name: Several inline PHP echoes
+Input:
+    p | %= $name %, do you know %= $anotherUser %?
+Output:
+    <p><?php echo $name; ?>, do you know <?php echo $anotherUser; ?>?</p>
