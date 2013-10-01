@@ -27,3 +27,9 @@ Input:
     p | %= $name %, do you know %= $anotherUser %?
 Output:
     <p><?php echo $name; ?>, do you know <?php echo $anotherUser; ?>?</p>
+
+Name: PHP echo (within comment)
+Input:
+    ! Page generation time: %= $time %
+Output:
+    <!-- Page generation time: <?php echo $time; ?> -->

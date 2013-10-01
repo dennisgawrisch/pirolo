@@ -47,8 +47,24 @@ Input:
 Output:
     <a href="/users/<?php echo $userId; ?>">Profile</a>
 
-Name: PHP echo (within comment)
+Name: PHP loop
 Input:
-    ! Page generation time: %= $time %
+    %foreach ($articles as $article)
+        li | %= $article->getTitle()
 Output:
-    <!-- Page generation time: <?php echo $time; ?> -->
+    <?php foreach ($articles as $article) { ?>
+        <li><?php echo $article->getTitle(); ?></li>
+    <?php } ?>
+
+Name: PHP if-else
+Input:
+    %if (count($articles) > 0)
+        p | There are some articles.
+    %else
+        p | No articles!
+Output:
+    <?php if (count($articles) > 0) { ?>
+        <p>There are some articles.</p>
+    <?php } else { ?>
+        <p>No articles!</p>
+    <?php } ?>
