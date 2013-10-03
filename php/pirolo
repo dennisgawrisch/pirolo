@@ -2,11 +2,68 @@
 <?php
 require_once "Pirolo/autoload.php";
 
-if (empty($_SERVER["argv"][1])) {
-    die("Usage: pirolo <filename>" . PHP_EOL);
+$commandLine = new Pirolo\CommandLine(array(
+    "output|o="             => "Output file or directory (use - for stdout)",
+    "extension|e="          => "Output file extension (default: .html)",
+    "source-extension|E="   => "Source file extension (default: .pirolo)",
+    "language|L="           => "Source template language. PHP is default and only supported value at the moment",
+    "recursive|r|R"         => "Process directories recursively",
+    "daemon|d"              => "Continue running and processing source after changes",
+    "help|h|?"              => "Show this usage information",
+));
+$commandLine->setArgumentName("SOURCE");
+$commandLine->process();
+if ($commandLine->getOption("help")) {
+    $commandLine->echoUsageInfo();
+    exit;
 }
 
-$source = file_get_contents($_SERVER["argv"][1]);
+$sourceExtension = $commandLine->getOption("source-extension") ?: ".pirolo";
+$outputExtension = $commandLine->getOption("extension") ?: ".html";
+
 $markup = new Pirolo\Markup;
-$output = $markup->process($source);
-echo $output;
+
+if (0 == count($commandLine->getArguments())) {
+    $sourceContents = "";
+    while (!feof(STDIN)) {
+        $sourceContents .= fgets(STDIN);
+    }
+    $outputContents = $markup->process($sourceContents);
+    $output = $commandLine->getOption("output");
+    if (("" == $output) || ("-" == $output)) {
+        fwrite(STDOUT, $outputContents);
+    } elseif (is_dir($output)) {
+        fwrite(STDERR, "Cannot output into directory" . PHP_EOL);
+        exit(2);
+    } else {
+        file_put_contents($output, $outputContents);
+    }
+} else {
+    foreach ($commandLine->getArguments() as $source) {
+        if (!file_exists($source)) {
+            fwrite(STDERR, sprintf("File '%s' does not exist", $source) . PHP_EOL);
+            exit(2);
+        }
+        if (is_dir($source)) {
+            # TODO process directory
+        } else {
+            $outputContents = $markup->process(file_get_contents($source));
+            $output = $commandLine->getOption("output");
+            if (("" == $output) || is_dir($output)) {
+                $outputDirectory = ("" == $output) ? dirname($source) : $output;
+                $sourceFilename = basename($source);
+                if ($sourceExtension == substr($sourceFilename, -strlen($sourceExtension))) {
+                    $outputFilename = substr($sourceFilename, 0, -strlen($sourceExtension)) . $outputExtension;
+                } else {
+                    $outputFilename = $sourceFilename . $outputExtension;
+                }
+                file_put_contents($outputDirectory . DIRECTORY_SEPARATOR . $outputFilename, $outputContents);
+            } elseif ("-" == $output) {
+                fwrite(STDOUT, $outputContents);
+            } else {
+                file_put_contents($output, $outputContents);
+            }
+        }
+    }
+    # TODO daemon mode
+}

@@ -90,13 +90,13 @@ class CommandLine {
                 if ($forceArguments) {
                     $this->addArgument($arg);
                 } else {
-                    if ("-" == $arg[0]) {
+                    if (("-" == $arg[0]) && (strlen($arg) > 1)) {
                         if ("-" == $arg[1]) {
                             if (2 == strlen($arg)) {
                                 $forceArguments = TRUE;
                             } else { // long option
                                 $arg = substr($arg, 2);
-                                if (1 == strlen($arg)) { // single-char options must use one dash
+                                if (1 == strlen($arg)) {
                                     throw new RuntimeException(sprintf("Use '-%s' instead of '--%1\$s'", $arg));
                                 }
                                 $equalsSignPos = strpos($arg, "=");
@@ -118,9 +118,9 @@ class CommandLine {
                             }
                         }
                     } else {
-                        if (!empty($lastOption) && $this->optionAcceptsValue($lastOption)) { // option value
+                        if (!empty($lastOption) && $this->optionAcceptsValue($lastOption)) {
                             $this->setOption($lastOption, $arg);
-                        } else { // argument
+                        } else {
                             $this->addArgument($arg);
                         }
                         $lastOption = NULL;
