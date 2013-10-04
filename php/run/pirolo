@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-require_once "Pirolo/autoload.php";
+require_once __DIR__ . "/../Pirolo/autoload.php";
 
 $commandLine = new Pirolo\CommandLine(array(
     "output|o="             => "Output file or directory (use - for stdout)",

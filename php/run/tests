@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+error_reporting(E_ALL);
+set_error_handler(function($level, $message, $filename, $line) {
+    throw new ErrorException($message, 0, $level, $filename, $line);
+});
+
+require_once __DIR__ . "/../Pirolo/autoload.php";
+
+$tests = new Pirolo\TestSuite;
+$tests->add(__DIR__ . "/../../cases/introduction.txt");
+$tests->add(__DIR__ . "/../../cases/details.txt");
+$tests->add(__DIR__ . "/../../cases/php.txt");
+$tests->add(__DIR__ . "/../../cases/php-details.txt");
+$tests->run();
