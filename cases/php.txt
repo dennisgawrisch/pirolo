@@ -47,6 +47,12 @@ Input:
 Output:
     <a href="/users/<?php echo $userId; ?>">Profile</a>
 
+Name: PHP echo with escaping
+Input:
+    foo | %=e $bar
+Output:
+    <foo><?php echo htmlspecialchars($bar); ?></foo>
+
 Name: PHP foreach
 Input:
     %foreach ($articles as $article)

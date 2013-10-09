@@ -55,12 +55,14 @@ class Markup {
 
             if (!$parent->parseContents) {
                 $node = new TextNode($line);
+            } elseif ("%=e" == substr($line, 0, 3)) {
+                $node = new PhpNode(ltrim(substr($line, 3)), PhpNode::TYPE_ECHO_ESCAPE);
             } elseif ("%=" == substr($line, 0, 2)) {
-                $node = new PhpNode("echo " . ltrim(substr($line, 2)));
+                $node = new PhpNode(ltrim(substr($line, 2)), PhpNode::TYPE_ECHO);
             } elseif ("%" == $line[0]) {
                 $node = new PhpNode(ltrim(substr($line, 1)));
             } else {
-                $line = preg_replace("/%= (.*)( %|$)/U", "<?php echo $1; ?>", $line);
+                $line = preg_replace_callback("/%=(e?)( .*)( %|$)/U", array($this, "inlineProcess"), $line);
                 if ("|" == $line[0]) {
                     $node = new TextNode(ltrim(substr($line, 1)));
                 } elseif ("!!" == substr($line, 0, 2)) {
@@ -133,5 +135,10 @@ class Markup {
         }
 
         return $document->output();
+    }
+
+    public function inlineProcess($matches) {
+        $node = new PhpNode(trim($matches[2]), $matches[1] ? PhpNode::TYPE_ECHO_ESCAPE : PhpNode::TYPE_ECHO);
+        return $node->outputInline();
     }
 }

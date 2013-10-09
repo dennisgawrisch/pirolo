@@ -34,6 +34,24 @@ Input:
 Output:
     <!-- Page generation time: <?php echo $time; ?> -->
 
+Name: PHP echo with escaping (element’s contents)
+Input:
+    foo | %=e $bar
+Output:
+    <foo><?php echo htmlspecialchars($bar); ?></foo>
+
+Name: PHP echo with escaping (within element’s contents)
+Input:
+    p | Hello, %=e $name %! How are you?
+Output:
+    <p>Hello, <?php echo htmlspecialchars($name); ?>! How are you?</p>
+
+Name: PHP echo with escaping (within element’s attributes)
+Input:
+    a href="/users/%=e $userId %" | Profile
+Output:
+    <a href="/users/<?php echo htmlspecialchars($userId); ?>">Profile</a>
+
 Name: PHP if-elseif
 Input:
     %if (0 == count($articles))

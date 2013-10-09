@@ -2,10 +2,19 @@
 namespace Pirolo;
 
 class PhpNode extends NodeWithBeginEnd {
+    const TYPE_REGULAR      = 0;
+    const TYPE_ECHO         = 1;
+    const TYPE_ECHO_ESCAPE  = 2;
+
     public $text;
     public $parseContents;
 
-    public function __construct($text) {
+    public function __construct($text, $type = self::TYPE_REGULAR) {
+        if (self::TYPE_ECHO == $type) {
+            $text = "echo $text";
+        } elseif (self::TYPE_ECHO_ESCAPE == $type) {
+            $text = "echo htmlspecialchars($text)";
+        }
         $this->text = $text;
         $this->parseContents = !empty($this->text);
     }
@@ -40,5 +49,9 @@ class PhpNode extends NodeWithBeginEnd {
     public function isSecondaryPartOfCompoundStatement() {
         return preg_match("/^(else|catch|finally)/", $this->text)
             || (preg_match("/^while/", $this->text) && $this->previousSibling && preg_match("/^do/", $this->previousSibling->text));
+    }
+
+    public function outputInline() {
+        return "<?php " . $this->text . "; ?>";
     }
 }
