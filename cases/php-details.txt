@@ -33,3 +33,74 @@ Input:
     ! Page generation time: %= $time %
 Output:
     <!-- Page generation time: <?php echo $time; ?> -->
+
+Name: PHP if-elseif
+Input:
+    %if (0 == count($articles))
+        p | No articles.
+    %elseif (count($articles) > 5)
+        p | More than 5 articles!
+Output:
+    <?php if (0 == count($articles)) { ?>
+        <p>No articles.</p>
+    <?php } elseif (count($articles) > 5) { ?>
+        <p>More than 5 articles!</p>
+    <?php } ?>
+
+Name: PHP if-elseif-else
+Input:
+    %if (0 == count($articles))
+        p | No articles.
+    %elseif (count($articles) > 5)
+        p | More than 5 articles!
+    %else
+        p | Few articles.
+Output:
+    <?php if (0 == count($articles)) { ?>
+        <p>No articles.</p>
+    <?php } elseif (count($articles) > 5) { ?>
+        <p>More than 5 articles!</p>
+    <?php } else { ?>
+        <p>Few articles.</p>
+    <?php } ?>
+
+Name: PHP for
+Input:
+    %for ($i = 1; $i <= 5; $i++)
+        li | %= $i
+Output:
+    <?php for ($i = 1; $i <= 5; $i++) { ?>
+        <li><?php echo $i; ?></li>
+    <?php } ?>
+
+Name: PHP while
+Input:
+    %while ($i <= 5)
+        li | %= $i++
+Output:
+    <?php while ($i <= 5) { ?>
+        <li><?php echo $i++; ?></li>
+    <?php } ?>
+
+Name: PHP do-while
+Input:
+    %do
+        li | %= $i++
+    %while ($i < 5)
+Output:
+    <?php do { ?>
+        <li><?php echo $i++; ?></li>
+    <?php } while ($i < 5); ?>
+
+Name: PHP try-catch
+Input:
+    %try
+        %= $item->getTitle()
+    %catch (Exception $e)
+        | Error!
+Output:
+    <?php try { ?>
+        <li><?php echo $item->getTitle(); ?></li>
+    <?php } catch (Exception $e) { ?>
+        Error!
+    <?php } ?>

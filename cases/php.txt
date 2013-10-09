@@ -47,13 +47,22 @@ Input:
 Output:
     <a href="/users/<?php echo $userId; ?>">Profile</a>
 
-Name: PHP loop
+Name: PHP foreach
 Input:
     %foreach ($articles as $article)
         li | %= $article->getTitle()
 Output:
     <?php foreach ($articles as $article) { ?>
         <li><?php echo $article->getTitle(); ?></li>
+    <?php } ?>
+
+Name: PHP if
+Input:
+    %if (0 == count($articles))
+        p | No articles!
+Output:
+    <?php if (0 == count($articles)) { ?>
+        <p>No articles!</p>
     <?php } ?>
 
 Name: PHP if-else
