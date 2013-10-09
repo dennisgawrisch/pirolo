@@ -2,26 +2,26 @@
 namespace Pirolo;
 
 class PhpNode extends NodeWithBeginEnd {
-    public $parseContents = FALSE;
     public $text;
+    public $parseContents;
 
     public function __construct($text) {
         $this->text = $text;
+        $this->parseContents = !empty($this->text);
     }
 
     public function outputBegin() {
         $output = "<?php";
         if (!empty($this->text)) {
             $output .= " " . $this->text;
+            if (count($this->children) > 0) {
+                $output .= " { ?>";
+            }
         }
         return $output;
     }
 
     public function outputEnd() {
-        $output = "?>";
-        if (!empty($this->text) && (0 == count($this->children))) {
-            $output = "; " . $output;
-        }
-        return $output;
+        return empty($this->text) ? "?>" : ((count($this->children) > 0) ? "<?php } ?>" : "; ?>");
     }
 }
