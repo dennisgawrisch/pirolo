@@ -68,3 +68,14 @@ Output:
     <?php } else { ?>
         <p>No articles!</p>
     <?php } ?>
+
+Name: PHP shortcut nesting
+Input:
+    ul > %foreach ($articles as $article)
+        li | %= $article->getTitle()
+Output:
+    <ul>
+        <?php foreach ($articles as $article) { ?>
+            <li><?php echo $article->getTitle(); ?></li>
+        <?php } ?>
+    </ul>
