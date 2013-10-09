@@ -34,6 +34,12 @@ Input:
 Output:
     <!-- Page generation time: <?php echo $time; ?> -->
 
+Name: PHP echo with escaping (whole line)
+Input:
+    %=e $foo
+Output:
+    <?php echo htmlspecialchars($foo); ?>
+
 Name: PHP echo with escaping (element’s contents)
 Input:
     foo | %=e $bar
