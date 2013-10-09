@@ -100,7 +100,7 @@ Input:
         | Error!
 Output:
     <?php try { ?>
-        <li><?php echo $item->getTitle(); ?></li>
+        <?php echo $item->getTitle(); ?>
     <?php } catch (Exception $e) { ?>
         Error!
     <?php } ?>

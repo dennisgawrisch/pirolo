@@ -4,11 +4,19 @@ namespace Pirolo;
 abstract class Node {
     public $parent;
     public $children = array();
+    public $previousSibling;
+    public $nextSibling;
     public $leadingSpaces;
     public $level;
     public $parseContents = TRUE;
 
     public function setParent(Node $parent) {
+        $sibling = NULL;
+        foreach ($parent->children as $sibling);
+        if ($sibling) {
+            $this->previousSibling = $sibling;
+            $this->previousSibling->nextSibling = $this;
+        }
         $this->parent = $parent;
         $parent->children []= $this;
         $this->level = $parent->level + 1;
